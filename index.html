@@ -1,16 +1,25 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>重定向中...</title>
-    <!-- 使用 meta 標籤進行自動重定向 -->
-    <meta http-equiv="refresh" content="0; url=studyflow://oauth_callback" />
-    <!-- 使用 JavaScript 確保重定向執行 -->
     <script>
         window.onload = function() {
-            window.location.href = "studyflow://oauth_callback";
+            // 抓取當前網址的 Query Parameters (例如: ?code=123&state=abc)
+            var queryString = window.location.search;
+            // 抓取當前網址的 Hash Fragment (有些 OAuth 機制會把 token 放在 # 後面)
+            var hashString = window.location.hash;
+
+            // 組合你的 Deep Link 基礎網址
+            var baseScheme = "studyflow://oauth_callback";
+            var finalUrl = baseScheme + queryString + hashString;
+
+            // 更新手動點擊的連結，以防自動跳轉失敗
+            document.getElementById("fallback-link").href = finalUrl;
+
+            // 執行自動跳轉
+            window.location.href = finalUrl;
         };
     </script>
     <style>
@@ -21,17 +30,12 @@
             background-color: #f9f9f9;
             color: #333;
         }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
     <h2>正在將您重定向回應用程式...</h2>
-    <p>如果畫面沒有自動跳轉，請 <a href="studyflow://oauth_callback">點擊這裡</a> 繼續。</p>
+    <p>如果畫面沒有自動跳轉，請 <a id="fallback-link" href="studyflow://oauth_callback">點擊這裡</a> 繼續。</p>
 </body>
 </html>
